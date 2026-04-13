@@ -10,33 +10,36 @@ def create_app():
     """
     Application factory (enterprise standard)
     """
-    app = Flask(__name__)
+
+    # ✅ BASE DIR FIX
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+    # ✅ STATIC + TEMPLATE FIX (IMPORTANT)
+    app = Flask(
+        __name__,
+        template_folder=os.path.join(BASE_DIR, "dashboard/templates"),
+        static_folder=os.path.join(BASE_DIR, "dashboard/static"),
+        static_url_path="/dashboard/static"
+    )
 
     # Load configuration
     app.config.from_object(Config)
 
     # LOGGER SETUP
-    
     logger = get_logger("MainApp")
     app.logger = logger
     logger.info("🚀 Initializing NIDS Application...")
 
     # REGISTER BLUEPRINTS
-  
-    # Detection API → /api
     app.register_blueprint(detection_bp, url_prefix="/api")
-
-    # Dashboard → /dashboard
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
 
-    # ROOT REDIRECT 
-
+    # ROOT REDIRECT
     @app.route("/")
     def home():
         return redirect("/dashboard/")
 
-    # HEALTH CHECK (PRODUCTION)
-    
+    # HEALTH CHECK
     @app.route("/health", methods=["GET"])
     def health_check():
         return {
@@ -47,9 +50,9 @@ def create_app():
 
     logger.info("✅ Application setup completed")
     return app
-  
-# RUN SERVER
 
+
+# RUN SERVER
 if __name__ == "__main__":
     app = create_app()
 
@@ -57,6 +60,6 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     debug = os.getenv("DEBUG", "True") == "True"
 
-    app.logger.info(f"🌐 Starting server at http://{host}:{port}")
+    app.logger.info(f"🌐 Starting server at http://127.0.0.1:{port}")
 
     app.run(host=host, port=port, debug=debug)
