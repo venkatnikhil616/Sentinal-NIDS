@@ -1,10 +1,15 @@
 from flask import Blueprint, render_template
+
 from database.crud import get_recent_logs, get_attack_stats
-                                                        dashboard_bp = Blueprint(
+
+
+dashboard_bp = Blueprint(
     "dashboard",
     __name__,
     template_folder="../../dashboard/templates",
-    static_folder="../../dashboard/static"              )
+    static_folder="../../dashboard/static",
+    static_url_path="/dashboard/static"   # IMPORTANT FIX
+)
 
 
 @dashboard_bp.route("/")
