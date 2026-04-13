@@ -1,6 +1,6 @@
 from typing import Dict, Any
 from datetime import datetime
-from detection.preprocessor import preprocess_input
+from detection.preprocessor import preprocess
 from app.services.detection_service import DetectionService                                                    
 from app.services.alert_service import AlertService
 from app.services.logging_service import log_event
