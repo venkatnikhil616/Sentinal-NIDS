@@ -5,13 +5,14 @@
     <title>NIDS Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- ✅ USE ONLY THIS -->
+    <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='style.css') }}">
 
     <style>
         body {
-            background: #0f172a;
             color: white;
             font-family: 'Segoe UI', sans-serif;
+            /* ❌ REMOVE background here (it overrides image) */
         }
 
         .container {
@@ -26,7 +27,7 @@
         }
 
         .card {
-            background: #1e293b;
+            background: rgba(30, 41, 59, 0.85); /* ✅ semi-transparent */
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 20px;
@@ -109,7 +110,6 @@
 </div>
 
 <script>
-    // Auto refresh every 5 seconds
     setTimeout(() => {
         window.location.reload();
     }, 5000);
