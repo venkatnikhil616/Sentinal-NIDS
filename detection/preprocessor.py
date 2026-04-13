@@ -42,7 +42,9 @@ DEFAULT_VALUES = {
 }
 
 
-# VALIDATION HELPERS
+# ---------------------------
+# HELPERS
+# ---------------------------
 
 def _safe_float(value, default=0.0):
     try:
@@ -63,9 +65,12 @@ def _safe_str(value, default=""):
         return default
     return str(value).strip()
 
-# MAIN PREPROCESS FUNCTION
 
-def preprocess_input(data: Dict[str, Any]) -> Dict[str, Any]:
+# ---------------------------
+# MAIN PREPROCESS FUNCTION ✅ FIXED NAME
+# ---------------------------
+
+def preprocess(data: Dict[str, Any]) -> Dict[str, Any]:
     """
     Validate and clean incoming network data
     """
@@ -79,7 +84,6 @@ def preprocess_input(data: Dict[str, Any]) -> Dict[str, Any]:
         raw_value = data.get(key, default)
 
         # TYPE HANDLING
-    
         if isinstance(default, float):
             value = _safe_float(raw_value, default)
 
@@ -92,34 +96,26 @@ def preprocess_input(data: Dict[str, Any]) -> Dict[str, Any]:
         else:
             value = raw_value
 
-        # BASIC SANITY CHECKS
-      
+        # SANITY CHECK
         value = _apply_bounds(key, value)
 
         processed[key] = value
 
     return processed
 
-# VALUE SANITY CHECKS
+
+# ---------------------------
+# VALUE CHECKS
+# ---------------------------
 
 def _apply_bounds(key: str, value: Any):
-    """
-    Apply logical constraints to values
-    """
-
     try:
-        # Prevent negative values for counts
-        if key in [
-            "duration", "src_bytes", "dst_bytes",
-            "count", "srv_count"
-        ]:
+        if key in ["duration", "src_bytes", "dst_bytes", "count", "srv_count"]:
             return max(0, value)
 
-        # Rates must be between 0 and 1
         if key.endswith("_rate"):
             return min(max(0.0, float(value)), 1.0)
 
-        # Boolean fields → 0 or 1
         if key in ["logged_in", "is_host_login", "is_guest_login"]:
             return 1 if str(value).lower() in ["1", "true", "yes"] else 0
 
