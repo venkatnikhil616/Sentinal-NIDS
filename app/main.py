@@ -3,6 +3,7 @@ from flask import Flask, redirect
 from app.config import Config
 from utils.logger import get_logger
 from app.routes.detection_routes import detection_bp
+from app.routes.auth_routes import auth_bp
 from app.routes.dashboard_routes import dashboard_bp
 from flask_login import LoginManager
 from database.models import User
@@ -31,7 +32,7 @@ def load_user(user_id):
         static_folder=os.path.join(BASE_DIR, "dashboard/static"),
         static_url_path="/dashboard/static"
     )
-
+app.register_blueprint(auth_bp)
     # Load configuration
     app.config.from_object(Config)
 
