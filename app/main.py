@@ -4,12 +4,22 @@ from app.config import Config
 from utils.logger import get_logger
 from app.routes.detection_routes import detection_bp
 from app.routes.dashboard_routes import dashboard_bp
-
+from flask_login import LoginManager
+from database.models import User
+from database.db import SessionLocal
 
 def create_app():
     """
     Application factory (enterprise standard)
     """
+    login_manager = LoginManager()
+login_manager.login_view = "auth.login"
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    db = SessionLocal()
+    return db.query(User).get(int(user_id))
 
     # ✅ BASE DIR FIX
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -63,3 +73,4 @@ if __name__ == "__main__":
     app.logger.info(f"🌐 Starting server at http://127.0.0.1:{port}")
 
     app.run(host=host, port=port, debug=debug)
+    
