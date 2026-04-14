@@ -1,163 +1,39 @@
-/* GLOBAL STYLES */
 body {
     font-family: 'Segoe UI', sans-serif;
-
-    /* 🔥 DARK OVERLAY + BG IMAGE */
     background:
-        linear-gradient(rgba(5, 10, 25, 0.85), rgba(5, 10, 25, 0.9)),
+        linear-gradient(rgba(5,10,25,0.9), rgba(5,10,25,0.95)),
         url("/dashboard/static/bg.jpg");
-
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-
     min-height: 100vh;
     color: white;
 }
 
-/* CONTAINER */
-.container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 20px;
-}
-
-/* TITLE */
-h1 {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 25px;
-    color: #38bdf8;
-    text-shadow: 0 0 12px rgba(56,189,248,0.9);
-}
-
-/* 🔥 CARDS (ENHANCED GLASS EFFECT) */
+/* CARD */
 .card {
-    background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(14px);
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 20px;
-
-    border: 1px solid rgba(56,189,248,0.1);
-
+    background: rgba(15,23,42,0.65);
+    border-radius: 12px;
+    padding: 15px;
+    backdrop-filter: blur(10px);
     box-shadow:
         0 0 20px rgba(0,255,255,0.08),
         inset 0 0 10px rgba(0,255,255,0.05);
-
-    animation: fadeIn 0.6s ease;
-
-    /* SCROLL */
-    max-height: 320px;
-    overflow-y: auto;
-}
-
-/* LOG ENTRIES */
-.log {
-    font-size: 13px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    padding: 8px 0;
-    transition: 0.25s ease;
-}
-
-.log:hover {
-    background: rgba(0,255,255,0.05);
-    padding-left: 6px;
-}
-
-/* STATUS COLORS */
-.safe {
-    color: #22c55e;
-    text-shadow: 0 0 6px #22c55e;
-}
-
-.attack {
-    color: #ef4444;
-    text-shadow: 0 0 6px #ef4444;
-}
-
-/* BADGES */
-.badge {
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    margin-right: 5px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-}
-
-/* Severity colors */
-.low {
-    background: #22c55e;
-    color: black;
-    box-shadow: 0 0 8px #22c55e;
-}
-
-.medium {
-    background: #f59e0b;
-    color: black;
-    box-shadow: 0 0 8px #f59e0b;
-}
-
-.high {
-    background: #ef4444;
-    color: white;
-    box-shadow: 0 0 10px #ef4444;
-}
-
-/* REFRESH TEXT */
-.refresh {
-    text-align: right;
-    font-size: 12px;
-    opacity: 0.7;
-}
-
-/* SCROLLBAR */
-.card::-webkit-scrollbar {
-    width: 6px;
-}
-
-.card::-webkit-scrollbar-thumb {
-    background: linear-gradient(#38bdf8, #0ff);
-    border-radius: 10px;
-}
-
-/* ANIMATIONS */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 🔥 HOVER GLOW */
-.card:hover {
-    box-shadow:
-        0 0 25px rgba(56,189,248,0.3),
-        0 0 40px rgba(0,255,255,0.15);
-
-    transform: translateY(-3px);
     transition: 0.3s;
 }
 
-/* 🔥 HEADER GLOW (if reused) */
-.header {
-    text-shadow:
-        0 0 10px #0ff,
-        0 0 20px rgba(0,255,255,0.4);
+.card:hover {
+    box-shadow:
+        0 0 30px rgba(0,255,255,0.25),
+        0 0 50px rgba(0,255,255,0.1);
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-
-    h1 {
-        font-size: 22px;
-    }
+/* LOG */
+.log {
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
+
+/* STATUS */
+.safe { color:#22c55e; }
+.attack { color:#ef4444; }
