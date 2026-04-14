@@ -1,6 +1,7 @@
 # CORE
 flask
 flask-login werkzeug
+scapy
 numpy
 pandas
 # MACHINE LEARNING
