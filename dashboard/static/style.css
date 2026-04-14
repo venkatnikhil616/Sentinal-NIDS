@@ -2,8 +2,9 @@
 body {
     font-family: 'Segoe UI', sans-serif;
 
+    /* 🔥 DARK OVERLAY + BG IMAGE */
     background:
-        linear-gradient(rgba(15, 25, 60, 0.8), rgba(15, 25, 60, 0.8)),
+        linear-gradient(rgba(5, 10, 25, 0.85), rgba(5, 10, 25, 0.9)),
         url("/dashboard/static/bg.jpg");
 
     background-size: cover;
@@ -11,7 +12,9 @@ body {
     background-repeat: no-repeat;
 
     min-height: 100vh;
+    color: white;
 }
+
 /* CONTAINER */
 .container {
     max-width: 1100px;
@@ -25,43 +28,52 @@ h1 {
     font-size: 28px;
     margin-bottom: 25px;
     color: #38bdf8;
-    text-shadow: 0 0 10px rgba(56,189,248,0.7);
+    text-shadow: 0 0 12px rgba(56,189,248,0.9);
 }
 
-/* CARDS (GLASS EFFECT) */
+/* 🔥 CARDS (ENHANCED GLASS EFFECT) */
 .card {
-    background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(14px);
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
-    border: 1px solid rgba(255,255,255,0.05);
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+
+    border: 1px solid rgba(56,189,248,0.1);
+
+    box-shadow:
+        0 0 20px rgba(0,255,255,0.08),
+        inset 0 0 10px rgba(0,255,255,0.05);
+
     animation: fadeIn 0.6s ease;
+
+    /* SCROLL */
+    max-height: 320px;
+    overflow-y: auto;
 }
 
-/*LOG ENTRIES*/
+/* LOG ENTRIES */
 .log {
     font-size: 13px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
     padding: 8px 0;
-    transition: 0.3s;
+    transition: 0.25s ease;
 }
 
 .log:hover {
-    background: rgba(255,255,255,0.05);
-    padding-left: 5px;
+    background: rgba(0,255,255,0.05);
+    padding-left: 6px;
 }
 
 /* STATUS COLORS */
 .safe {
     color: #22c55e;
-    text-shadow: 0 0 5px #22c55e;
+    text-shadow: 0 0 6px #22c55e;
 }
 
 .attack {
     color: #ef4444;
-    text-shadow: 0 0 5px #ef4444;
+    text-shadow: 0 0 6px #ef4444;
 }
 
 /* BADGES */
@@ -71,22 +83,26 @@ h1 {
     font-size: 11px;
     margin-right: 5px;
     font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 /* Severity colors */
 .low {
     background: #22c55e;
     color: black;
+    box-shadow: 0 0 8px #22c55e;
 }
 
 .medium {
     background: #f59e0b;
     color: black;
+    box-shadow: 0 0 8px #f59e0b;
 }
 
 .high {
     background: #ef4444;
     color: white;
+    box-shadow: 0 0 10px #ef4444;
 }
 
 /* REFRESH TEXT */
@@ -96,23 +112,17 @@ h1 {
     opacity: 0.7;
 }
 
-/*SCROLL AREA*/
-.card {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-/* Custom scrollbar */
+/* SCROLLBAR */
 .card::-webkit-scrollbar {
     width: 6px;
 }
 
 .card::-webkit-scrollbar-thumb {
-    background: #38bdf8;
+    background: linear-gradient(#38bdf8, #0ff);
     border-radius: 10px;
 }
 
-/*  ANIMATIONS */
+/* ANIMATIONS */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -124,14 +134,24 @@ h1 {
     }
 }
 
-/* GLOW EFFECT ON HOVER */
+/* 🔥 HOVER GLOW */
 .card:hover {
-    box-shadow: 0 0 25px rgba(56,189,248,0.3);
-    transform: translateY(-2px);
+    box-shadow:
+        0 0 25px rgba(56,189,248,0.3),
+        0 0 40px rgba(0,255,255,0.15);
+
+    transform: translateY(-3px);
     transition: 0.3s;
 }
 
-/*  RESPONSIVE */
+/* 🔥 HEADER GLOW (if reused) */
+.header {
+    text-shadow:
+        0 0 10px #0ff,
+        0 0 20px rgba(0,255,255,0.4);
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .container {
         padding: 10px;
