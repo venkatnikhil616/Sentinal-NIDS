@@ -17,14 +17,8 @@ def create_app():
     Application factory (enterprise standard)
     """
 
-    # ---------------------------
-    # BASE DIR
-    # ---------------------------
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-    # ---------------------------
-    # CREATE APP (FIRST!)
-    # ---------------------------
     app = Flask(
         __name__,
         template_folder=os.path.join(BASE_DIR, "dashboard/templates"),
@@ -32,14 +26,9 @@ def create_app():
         static_url_path="/dashboard/static"
     )
 
-    # ---------------------------
-    # CONFIG
-    # ---------------------------
     app.config.from_object(Config)
 
-    # ---------------------------
-    # LOGIN MANAGER
-    # ---------------------------
+    # 🔐 LOGIN MANAGER
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
@@ -49,30 +38,22 @@ def create_app():
         db = SessionLocal()
         return db.query(User).get(int(user_id))
 
-    # ---------------------------
-    # LOGGER
-    # ---------------------------
+    # 🧾 LOGGER
     logger = get_logger("MainApp")
     app.logger = logger
     logger.info("🚀 Initializing NIDS Application...")
 
-    # ---------------------------
-    # REGISTER BLUEPRINTS
-    # ---------------------------
+    # 📦 BLUEPRINTS
     app.register_blueprint(auth_bp)  # /login
     app.register_blueprint(detection_bp, url_prefix="/api")
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
 
-    # ---------------------------
-    # ROOT REDIRECT
-    # ---------------------------
+    # 🔥 FIXED ROOT REDIRECT
     @app.route("/")
     def home():
-        return redirect("/dashboard/")
+        return redirect("/login")   # ✅ FIX HERE
 
-    # ---------------------------
-    # HEALTH CHECK
-    # ---------------------------
+    # ❤️ HEALTH CHECK
     @app.route("/health", methods=["GET"])
     def health_check():
         return {
@@ -86,9 +67,7 @@ def create_app():
     return app
 
 
-# ---------------------------
-# RUN SERVER
-# ---------------------------
+# 🚀 RUN SERVER
 if __name__ == "__main__":
     app = create_app()
 
