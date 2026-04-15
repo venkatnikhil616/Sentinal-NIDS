@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from datetime import datetime
 from flask_login import UserMixin
-
 from database.db import Base
 
 
@@ -13,7 +12,6 @@ class Log(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    # Traffic data
     protocol_type = Column(String)
     service = Column(String)
     flag = Column(String)
@@ -21,13 +19,12 @@ class Log(Base):
     src_bytes = Column(Integer)
     dst_bytes = Column(Integer)
 
-    # Detection results
     attack_type = Column(String)
     confidence = Column(Float)
     severity = Column(String)
+
     event_type = Column(String)
 
-    # Timestamp
     timestamp = Column(DateTime, default=datetime.utcnow)
 
 
@@ -47,7 +44,7 @@ class Alert(Base):
 
 
 # ---------------------------
-# USER MODEL (AUTH)
+# USER MODEL ✅ FIXED
 # ---------------------------
 class User(Base, UserMixin):
     __tablename__ = "users"
