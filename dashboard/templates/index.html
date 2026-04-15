@@ -36,21 +36,16 @@ canvas {
     z-index: 0;
 }
 
-/* SWEEP */
 .radar::before {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: conic-gradient(
-        rgba(0,255,255,0.4),
-        transparent
-    );
+    background: conic-gradient(rgba(0,255,255,0.4), transparent);
     animation: sweep 3s linear infinite;
 }
 
-/* RINGS */
 .radar::after {
     content: "";
     position: absolute;
@@ -63,7 +58,6 @@ canvas {
         inset 0 0 20px rgba(0,255,255,0.2);
 }
 
-/* RADAR COLORS */
 .radar.high::before {
     background: conic-gradient(rgba(255,0,0,0.5), transparent);
 }
@@ -102,7 +96,6 @@ canvas {
     z-index: 2;
 }
 
-/* HEADER */
 .header {
     text-align: center;
     padding: 20px;
@@ -110,7 +103,6 @@ canvas {
     text-shadow: 0 0 10px #0ff;
 }
 
-/* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
@@ -118,7 +110,6 @@ canvas {
     padding: 20px;
 }
 
-/* CARD */
 .card {
     background: rgba(15,23,42,0.75);
     padding: 15px;
@@ -127,7 +118,6 @@ canvas {
     box-shadow: 0 0 20px rgba(0,255,255,0.1);
 }
 
-/* LOG */
 .log {
     font-size: 13px;
     border-bottom: 1px solid #1e293b;
@@ -164,31 +154,35 @@ canvas {
 <div class="grid">
     <div class="card">
         <h3>Total Traffic</h3>
-        <div>{{ stats.total or 0 }}</div>
+        <div id="total">{{ stats.total or 0 }}</div>
     </div>
     <div class="card">
         <h3>Attacks</h3>
-        <div>{{ stats.attacks or 0 }}</div>
+        <div id="attacks">{{ stats.attacks or 0 }}</div>
     </div>
 </div>
 
 <div class="grid">
     <div class="card">
         <h3>🚨 Alerts</h3>
+        <div id="alerts-box">
         {% for alert in alerts %}
         <div class="log">
             {{ alert.attack_type }} ({{ alert.severity }})
         </div>
         {% endfor %}
+        </div>
     </div>
 
     <div class="card">
         <h3>📡 Logs</h3>
+        <div id="logs-box">
         {% for log in logs %}
         <div class="log">
             {{ log.attack_type }}
         </div>
         {% endfor %}
+        </div>
     </div>
 </div>
 
@@ -223,35 +217,75 @@ function draw(){
 }
 setInterval(draw,50);
 
-/* ALERT DATA */
-    const alertsData = {{ alerts | default([]) | tojson }};
+/* INITIAL DATA SAFE */
+let alertsData = {{ alerts | default([]) | tojson | safe }};
 
-/* RADAR LOGIC */
-const radar = document.getElementById("radar-blips");
-const radarElement = document.querySelector(".radar");
+/* RADAR RENDER */
+function renderRadar(data){
+    const radar = document.getElementById("radar-blips");
+    const radarElement = document.querySelector(".radar");
 
-alertsData.forEach(alert=>{
-    const blip=document.createElement("div");
-    blip.classList.add("blip", alert.severity.toLowerCase());
+    radar.innerHTML = ""; // clear old blips
+    radarElement.classList.remove("high","medium");
 
-    const angle=Math.random()*2*Math.PI;
-    const radius=Math.random()*220;
+    data.forEach(alert=>{
+        const blip=document.createElement("div");
+        blip.classList.add("blip", alert.severity.toLowerCase());
 
-    const x=250+radius*Math.cos(angle);
-    const y=250+radius*Math.sin(angle);
+        const angle=Math.random()*2*Math.PI;
+        const radius=Math.random()*220;
 
-    blip.style.left=x+"px";
-    blip.style.top=y+"px";
+        const x=250+radius*Math.cos(angle);
+        const y=250+radius*Math.sin(angle);
 
-    radar.appendChild(blip);
-});
+        blip.style.left=x+"px";
+        blip.style.top=y+"px";
 
-/* RADAR COLOR */
-if(alertsData.some(a=>a.severity==="HIGH")){
-    radarElement.classList.add("high");
-}else if(alertsData.some(a=>a.severity==="MEDIUM")){
-    radarElement.classList.add("medium");
+        radar.appendChild(blip);
+    });
+
+    if(data.some(a=>a.severity==="HIGH")){
+        radarElement.classList.add("high");
+    } else if(data.some(a=>a.severity==="MEDIUM")){
+        radarElement.classList.add("medium");
+    }
 }
+
+renderRadar(alertsData);
+
+/* 🔥 LIVE REFRESH (NO RELOAD) */
+async function refreshData(){
+    try{
+        const res = await fetch("/dashboard/dashboard_data");
+        const data = await res.json();
+
+        // update stats
+        document.getElementById("total").innerText = data.stats.total;
+        document.getElementById("attacks").innerText = data.stats.attacks;
+
+        // update alerts
+        const alertsBox = document.getElementById("alerts-box");
+        alertsBox.innerHTML = "";
+        data.alerts.forEach(a=>{
+            alertsBox.innerHTML += `<div class="log">${a.attack_type} (${a.severity})</div>`;
+        });
+
+        // update logs
+        const logsBox = document.getElementById("logs-box");
+        logsBox.innerHTML = "";
+        data.logs.forEach(l=>{
+            logsBox.innerHTML += `<div class="log">${l.attack_type}</div>`;
+        });
+
+        // update radar
+        renderRadar(data.alerts);
+
+    } catch(err){
+        console.error("Refresh failed:", err);
+    }
+}
+
+setInterval(refreshData, 5000);
 </script>
 
 </body>
