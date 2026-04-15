@@ -67,7 +67,7 @@ def _safe_str(value, default=""):
 
 
 # ---------------------------
-# MAIN PREPROCESS FUNCTION ✅ FIXED NAME
+# MAIN FUNCTION
 # ---------------------------
 
 def preprocess(data: Dict[str, Any]) -> Dict[str, Any]:
@@ -83,7 +83,6 @@ def preprocess(data: Dict[str, Any]) -> Dict[str, Any]:
     for key, default in DEFAULT_VALUES.items():
         raw_value = data.get(key, default)
 
-        # TYPE HANDLING
         if isinstance(default, float):
             value = _safe_float(raw_value, default)
 
@@ -96,12 +95,15 @@ def preprocess(data: Dict[str, Any]) -> Dict[str, Any]:
         else:
             value = raw_value
 
-        # SANITY CHECK
         value = _apply_bounds(key, value)
-
         processed[key] = value
 
     return processed
+
+
+# ✅ ALIAS (IMPORTANT FIX)
+def preprocess_input(data: Dict[str, Any]) -> Dict[str, Any]:
+    return preprocess(data)
 
 
 # ---------------------------
