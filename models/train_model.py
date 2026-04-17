@@ -7,16 +7,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score
 
 # ---------------------------
-# PATHS ✅ FIXED
+# PATHS
 # ---------------------------
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, "dataset.csv")   # ✅ your current dataset
-MODEL_DIR = BASE_DIR
+DATA_PATH = os.path.join(BASE_DIR, "dataset.csv")
 
+MODEL_DIR = BASE_DIR
 MODEL_PATH = os.path.join(MODEL_DIR, "model.pkl")
 SCALER_PATH = os.path.join(MODEL_DIR, "scaler.pkl")
 ENCODER_PATH = os.path.join(MODEL_DIR, "encoder.pkl")
+FEATURES_PATH = os.path.join(MODEL_DIR, "features.pkl")  # ✅ NEW
 
 # ---------------------------
 # LOAD DATA
@@ -26,7 +27,7 @@ def load_data():
     if not os.path.exists(DATA_PATH):
         raise FileNotFoundError(f"❌ Dataset not found at {DATA_PATH}")
 
-    print("Reading from:", DATA_PATH)
+    print("📥 Reading from:", DATA_PATH)
 
     df = pd.read_csv(DATA_PATH)
 
@@ -34,7 +35,6 @@ def load_data():
         raise ValueError("❌ Dataset is empty")
 
     print(f"✅ Dataset loaded: {df.shape[0]} rows")
-
     return df
 
 
@@ -55,20 +55,23 @@ def preprocess(df):
     # Fill missing
     df.fillna(0, inplace=True)
 
-    # Encode categorical columns (safe)
+    # Encode categorical safely
     for col in ["protocol_type", "service", "flag"]:
         if col in df.columns:
             df[col] = df[col].astype(str).astype("category").cat.codes
 
-    # Split
+    # Separate
     X = df.drop(columns=["label"])
     y = df["label"]
+
+    # 🔥 FIX: store feature order
+    feature_columns = X.columns.tolist()
 
     # Encode labels
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
 
-    return X, y_encoded, label_encoder
+    return X, y_encoded, label_encoder, feature_columns
 
 
 # ---------------------------
@@ -80,7 +83,7 @@ def train_model():
     df = load_data()
 
     print("⚙️ Preprocessing...")
-    X, y, encoder = preprocess(df)
+    X, y, encoder, feature_columns = preprocess(df)
 
     print("🔀 Splitting data...")
     X_train, X_test, y_train, y_test = train_test_split(
@@ -89,25 +92,33 @@ def train_model():
 
     print("📏 Scaling...")
     scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
 
     print("🤖 Training model...")
     model = RandomForestClassifier(
         n_estimators=100,
-        random_state=42
+        random_state=42,
+        n_jobs=-1
     )
 
-    model.fit(X_train, y_train)
+    model.fit(X_train_scaled, y_train)
 
     print("📊 Evaluating...")
-    y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test_scaled)
 
     print("\nAccuracy:", accuracy_score(y_test, y_pred))
     print("\nReport:\n", classification_report(y_test, y_pred))
 
-    # Save
-    print("💾 Saving model...")
+    # ---------------------------
+    # SAVE EVERYTHING
+    # ---------------------------
+
+    print("💾 Saving model artifacts...")
+
+    os.makedirs(MODEL_DIR, exist_ok=True)
+
     with open(MODEL_PATH, "wb") as f:
         pickle.dump(model, f)
 
@@ -117,8 +128,16 @@ def train_model():
     with open(ENCODER_PATH, "wb") as f:
         pickle.dump(encoder, f)
 
+    # ✅ VERY IMPORTANT (prevents runtime bugs)
+    with open(FEATURES_PATH, "wb") as f:
+        pickle.dump(feature_columns, f)
+
     print("\n✅ DONE — Model Ready!")
-    print("📁 Saved in:", MODEL_DIR)
+    print("📁 Saved files:")
+    print("   - model.pkl")
+    print("   - scaler.pkl")
+    print("   - encoder.pkl")
+    print("   - features.pkl")
 
 
 # ---------------------------
