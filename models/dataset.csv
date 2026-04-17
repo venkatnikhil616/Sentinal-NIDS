@@ -1,0 +1,8 @@
+protocol_type,service,flag,src_bytes,dst_bytes,attack_type
+tcp,http,SF,100,200,normal
+tcp,http,SF,5000,1000,attack
+udp,dns,SF,50,20,normal
+tcp,ftp,SF,3000,500,attack
+tcp,http,SF,120,300,normal
+udp,dns,SF,70,40,normal
+tcp,ftp,SF,4000,800,attack
