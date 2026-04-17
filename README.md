@@ -34,11 +34,9 @@ Tech Stack
 - Streaming: Custom event pipeline
 
 ---
-
- Project Structure
+📁 Project Structure
 
 Rothschild-NIDS/
-│
 ├── app/                # Flask app (routes, services)
 ├── dashboard/          # UI (templates + static files)
 ├── database/           # Models, DB config, CRUD
@@ -48,6 +46,8 @@ Rothschild-NIDS/
 ├── utils/              # Helpers & logging
 ├── run.py              # Entry point
 └── create_user.py      # Create login user
+
+
 
 ---
 
